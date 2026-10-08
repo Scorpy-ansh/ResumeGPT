@@ -135,6 +135,49 @@ st.set_page_config(
 st.title("📄 AI Resume Analyzer & Career Assistant")
 st.markdown("Prompt Engineering Project using Gemini AI")
 
+# Session state keys
+RESULTS_KEYS = [
+    "resume_analysis",
+    "ats_check",
+    "interview_questions",
+    "career_assistant",
+    "cover_letter"
+]
+
+for key in RESULTS_KEYS:
+    if key not in st.session_state:
+        st.session_state[key] = None
+
+def run_all_analyses(resume_text):
+    with st.status("🤖 Running all 5 analyses with Gemini AI...", expanded=True) as status:
+
+        st.write("📊 Analyzing Resume (1/5)...")
+        st.session_state["resume_analysis"] = ask_gemini(
+            ROLE_PROMPT.format(resume=resume_text)
+        )
+
+        st.write("✅ Checking ATS Score (2/5)...")
+        st.session_state["ats_check"] = ask_gemini(
+            ATS_PROMPT.format(resume=resume_text)
+        )
+
+        st.write("❓ Generating Interview Questions (3/5)...")
+        st.session_state["interview_questions"] = ask_gemini(
+            INTERVIEW_PROMPT.format(resume=resume_text)
+        )
+
+        st.write("🎯 Career Guidance & Roadmap (4/5)...")
+        st.session_state["career_assistant"] = ask_gemini(
+            CAREER_PROMPT.format(resume=resume_text)
+        )
+
+        st.write("✉️ Generating Cover Letter (5/5)...")
+        st.session_state["cover_letter"] = ask_gemini(
+            COVER_PROMPT.format(resume=resume_text)
+        )
+
+        status.update(label="✅ All analyses complete! Switch tabs to view results.", state="complete", expanded=False)
+
 # Test API
 with st.expander("API Test"):
     if st.button("Test Gemini"):
@@ -159,87 +202,63 @@ if uploaded_file:
     with st.expander("View Resume Text"):
         st.text(resume_text[:3000])
 
+    st.markdown("---")
+    analyze_col, clear_col = st.columns([3, 1])
+
+    with analyze_col:
+        if st.button("🚀 Analyze My Resume (All 5 Sections)", type="primary", use_container_width=True):
+            run_all_analyses(resume_text)
+            st.rerun()
+
+    with clear_col:
+        if st.button("🧹 Clear Results", use_container_width=True):
+            for key in RESULTS_KEYS:
+                st.session_state[key] = None
+            st.rerun()
+
+    st.markdown("---")
+
     tab1, tab2, tab3, tab4, tab5 = st.tabs(
         [
-            "Resume Analysis",
-            "ATS Checker",
-            "Interview Questions",
-            "Career Assistant",
-            "Cover Letter"
+            "📊 Resume Analysis",
+            "✅ ATS Checker",
+            "❓ Interview Questions",
+            "🎯 Career Assistant",
+            "✉️ Cover Letter"
         ]
     )
 
     # TAB 1
     with tab1:
-
-        if st.button("Analyze Resume"):
-
-            with st.spinner("Analyzing..."):
-
-                prompt = ROLE_PROMPT.format(
-                    resume=resume_text
-                )
-
-                st.markdown(
-                    ask_gemini(prompt)
-                )
+        if st.session_state["resume_analysis"]:
+            st.markdown(st.session_state["resume_analysis"])
+        else:
+            st.info("👆 Click **'Analyze My Resume'** above to run all analyses at once.")
 
     # TAB 2
     with tab2:
-
-        if st.button("Check ATS Score"):
-
-            with st.spinner("Checking ATS..."):
-
-                prompt = ATS_PROMPT.format(
-                    resume=resume_text
-                )
-
-                st.markdown(
-                    ask_gemini(prompt)
-                )
+        if st.session_state["ats_check"]:
+            st.markdown(st.session_state["ats_check"])
+        else:
+            st.info("👆 Click **'Analyze My Resume'** above to run all analyses at once.")
 
     # TAB 3
     with tab3:
-
-        if st.button("Generate Interview Questions"):
-
-            with st.spinner("Generating..."):
-
-                prompt = INTERVIEW_PROMPT.format(
-                    resume=resume_text
-                )
-
-                st.markdown(
-                    ask_gemini(prompt)
-                )
+        if st.session_state["interview_questions"]:
+            st.markdown(st.session_state["interview_questions"])
+        else:
+            st.info("👆 Click **'Analyze My Resume'** above to run all analyses at once.")
 
     # TAB 4
     with tab4:
-
-        if st.button("Career Guidance"):
-
-            with st.spinner("Generating Roadmap..."):
-
-                prompt = CAREER_PROMPT.format(
-                    resume=resume_text
-                )
-
-                st.markdown(
-                    ask_gemini(prompt)
-                )
+        if st.session_state["career_assistant"]:
+            st.markdown(st.session_state["career_assistant"])
+        else:
+            st.info("👆 Click **'Analyze My Resume'** above to run all analyses at once.")
 
     # TAB 5
     with tab5:
-
-        if st.button("Generate Cover Letter"):
-
-            with st.spinner("Generating Cover Letter..."):
-
-                prompt = COVER_PROMPT.format(
-                    resume=resume_text
-                )
-
-                st.markdown(
-                    ask_gemini(prompt)
-                )
+        if st.session_state["cover_letter"]:
+            st.markdown(st.session_state["cover_letter"])
+        else:
+            st.info("👆 Click **'Analyze My Resume'** above to run all analyses at once.")
