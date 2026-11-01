@@ -1,5 +1,6 @@
 import pdfplumber
 
+
 def extract_text(pdf_file):
     text = ""
 
