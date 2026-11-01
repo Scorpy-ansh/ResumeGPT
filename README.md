@@ -1,114 +1,135 @@
 # ResumeIQ
 
-This repository contains **two separate apps**:
+> **A focused AI career companion for turning a resume into a practical job-search plan.**
 
-1. `app.py` is the original Streamlit application. It remains available and unchanged as the Streamlit version.
-2. `web_app.py` is the new standalone browser website with a custom HTML/CSS/JavaScript interface.
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-resume--gpt--omega.vercel.app-625bf4?style=for-the-badge)](https://resume-gpt-omega.vercel.app/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Website-Flask-000000?style=flat-square&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![Gemini](https://img.shields.io/badge/AI-Google%20Gemini-8E75B2?style=flat-square)](https://ai.google.dev/)
 
-The website is a minimal, AI-powered resume analyzer using Flask and Google Gemini. Upload a text-based PDF resume to receive five practical job-search tools in one place:
+ResumeIQ analyzes a text-based PDF resume and returns recruiter-style feedback, ATS guidance, interview questions, career direction, and a tailored cover letter. The project includes a standalone browser website and preserves the original Streamlit application.
 
-- **Resume review:** recruiter-style score, strengths, weaknesses, improvements, and recommendation
-- **ATS checker:** ATS score, missing keywords, formatting issues, and suggestions
-- **Interview prep:** 10 technical and 5 HR questions tailored to the resume
-- **Career roadmap:** suitable paths, skills, certifications, and a six-month roadmap
-- **Cover letter:** a professional cover letter based on the candidate profile
+## Live website
 
-The interface includes a responsive dashboard, cached results for the current session, a connection test, and a Light/Dark appearance switch.
+Open the deployed application at **[resume-gpt-omega.vercel.app](https://resume-gpt-omega.vercel.app/)**.
+
+The website provides:
+
+- A clean, responsive upload experience
+- Light and dark mode
+- Drag-and-drop PDF selection
+- Separate result tabs for each analysis
+- Score summaries when an AI response includes a score
+- Mobile-friendly report layout
+
+## Features
+
+| Tool | What it provides |
+| --- | --- |
+| **Resume review** | Resume score, strengths, weaknesses, improvements, and final recommendation |
+| **ATS checker** | ATS score, missing keywords, formatting issues, and suggestions |
+| **Interview prep** | Ten technical questions and five HR questions tailored to the resume |
+| **Career roadmap** | Suitable career paths, skills to learn, certifications, and a six-month roadmap |
+| **Cover letter** | A professional cover letter based on the candidate's experience |
+
+## How it works
+
+1. The user uploads a PDF resume in the browser.
+2. The Flask API extracts readable text with `pdfplumber`.
+3. The text is limited to 8,000 characters for predictable model input.
+4. Five specialized prompts are sent to Google Gemini.
+5. The website presents the responses in separate, readable report tabs.
 
 ## Run the website locally
 
-### Requirements
+### Prerequisites
 
-- Python 3.10+
-- A Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey)
+- Python 3.10 or newer
+- A Google Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey)
 
-### Setup
+### Windows setup
 
-```bash
-# Windows
+```powershell
+cd "C:\path\to\ResumeGPT"
 python -m venv venv
-venv\Scripts\activate
+.\venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
-Create a `.env` file in the project root:
+Create a local `.env` file. Do not commit this file:
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-Start the website backend:
+Start the standalone website:
 
-```bash
+```powershell
 python web_app.py
 ```
 
-Open `http://localhost:5000` in your browser.
+Visit [http://localhost:5000](http://localhost:5000).
 
-## Run the original Streamlit version
+## Deploy on Vercel
 
-The original Streamlit app is still in `app.py`:
-
-```bash
-streamlit run app.py
-```
-
-It opens at `http://localhost:8501`.
-
-## Deploy the website
-
-The website can be deployed to any Python host that supports Flask. Set the start command to:
-
-```bash
-gunicorn web_app:app
-```
-
-For local Windows use, `python web_app.py` is sufficient.
-
-### Deploy on Vercel
-
-Import this repository into Vercel and deploy from the `main` branch. The included
-`pyproject.toml` explicitly points Vercel to the standalone website entry point:
+This repository already contains the Vercel configuration for the standalone Flask website:
 
 ```toml
 [tool.vercel]
 entrypoint = "web_app:app"
 ```
 
-In the Vercel project settings, add this environment variable:
+In the Vercel project settings, add the following environment variable for Production, Preview, and Development:
 
 ```text
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-Do not set the Vercel entry point to `app.py`; that file is the preserved Streamlit
-application. Vercel should deploy `web_app:app`.
+After saving the variable, redeploy the project. Never put the real API key in GitHub, source files, screenshots, or documentation.
 
-Use the exact variable name `GEMINI_API_KEY` without quotes or spaces. Select
-Production, Preview, and Development, then redeploy after saving it.
+## Original Streamlit application
 
-## Deploy the Streamlit version with Streamlit Community Cloud
+The original Streamlit version remains preserved in `app.py`:
 
-1. Push this repository to GitHub.
-2. Create a new app at [share.streamlit.io](https://share.streamlit.io).
-3. Select this repository, the `main` branch, and `app.py`.
-4. Add the following secret in **Advanced settings**:
-
-```toml
-GEMINI_API_KEY = "your_gemini_api_key_here"
+```powershell
+streamlit run app.py
 ```
 
-Never commit `.env` or expose an API key in source control. The `.gitignore` file already excludes local secrets and Python cache files.
+It opens at [http://localhost:8501](http://localhost:8501).
+
+The website and Streamlit app share the same PDF extraction and prompt modules, but they are separate entry points.
 
 ## Project structure
 
 ```text
-app.py          # Original Streamlit application (preserved)
-web_app.py      # Separate Flask website backend
-templates/      # Website HTML
-static/         # Website CSS and JavaScript
-pdf_utils.py    # PDF text extraction
-prompts.py      # Analysis prompt templates
-requirements.txt
-test.py         # Simple Gemini connection test
+app.py                 # Preserved original Streamlit application
+web_app.py             # Flask website backend and API
+templates/index.html   # Website markup
+static/styles.css      # Website design system and responsive layout
+static/app.js          # Upload, theme, tabs, and report interactions
+pdf_utils.py           # PDF text extraction
+prompts.py             # Gemini analysis prompt templates
+requirements.txt       # Python dependencies
+pyproject.toml         # Vercel entry point and deployment dependencies
+PROJECT_REPORT.md      # Detailed project report
+test.py                # Basic Gemini connection test
 ```
+
+## Security and privacy
+
+- API keys are read from environment variables.
+- `.env` is ignored by Git.
+- Resume text is sent to Gemini only when the user requests analysis.
+- The current implementation does not permanently store uploaded resumes or generated reports.
+- Use a text-based PDF for the best extraction quality.
+
+## Limitations
+
+- Scanned/image-only PDFs need OCR support, which is not currently included.
+- AI output quality depends on the completeness and formatting of the uploaded resume.
+- Each complete analysis makes five Gemini requests.
+- The 8,000-character input limit may omit content from very long resumes.
+
+## License
+
+This project is intended for educational and portfolio use. Add a project-specific license before distributing it as an open-source package.
