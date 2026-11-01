@@ -46,14 +46,28 @@ function renderText(text) {
   return escaped.replace(/^### (.*)$/gm, "<h3>$1</h3>")
     .replace(/^## (.*)$/gm, "<h3>$1</h3>")
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/^\s*[-*] (.*)$/gm, "• $1")
+    .replace(/((?:^\s*[-*] .*(?:\n|$))+)/gm, (list) => `<ul>${list.trim().split(/\n/).map((item) => `<li>${item.replace(/^\s*[-*] /, "")}</li>`).join("")}</ul>`)
+    .replace(/((?:^\s*\d+[.)] .*(?:\n|$))+)/gm, (list) => `<ol class="numbered">${list.trim().split(/\n/).map((item) => `<li>${item.replace(/^\s*\d+[.)] /, "")}</li>`).join("")}</ol>`)
     .replace(/\n/g, "<br>");
+}
+
+function renderSummary(text) {
+  const scoreMatch = text.match(/(?:score|rating)[^0-9]{0,20}(\d{1,3})\s*(?:\/\s*100|out of 100)?/i);
+  const summary = document.querySelector("#result-summary");
+  if (scoreMatch) {
+    const score = Math.min(100, Number(scoreMatch[1]));
+    summary.innerHTML = `<span class="summary-label">Overall score</span><span class="score-value">${score}<small> / 100</small></span><span class="summary-note">A quick signal from this section's analysis.</span>`;
+  } else {
+    summary.innerHTML = `<span class="summary-label">Personalized insight</span><span class="score-value">✦</span><span class="summary-note">Use the guidance on the right to plan your next step.</span>`;
+  }
 }
 
 function showTab(key) {
   activeKey = key;
   document.querySelectorAll(".result-tab").forEach((tab) => tab.classList.toggle("active", tab.dataset.key === key));
-  content.innerHTML = renderText(report[key] || "No result was returned for this section.");
+  const text = report[key] || "No result was returned for this section.";
+  renderSummary(text);
+  content.innerHTML = renderText(text);
 }
 
 function showResults() {
