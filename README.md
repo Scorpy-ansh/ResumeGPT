@@ -1,6 +1,11 @@
 # ResumeIQ
 
-ResumeIQ is a minimal, AI-powered resume analyzer built with Streamlit and Google Gemini. Upload a text-based PDF resume to receive five practical job-search tools in one place:
+This repository contains **two separate apps**:
+
+1. `app.py` is the original Streamlit application. It remains available and unchanged as the Streamlit version.
+2. `web_app.py` is the new standalone browser website with a custom HTML/CSS/JavaScript interface.
+
+The website is a minimal, AI-powered resume analyzer using Flask and Google Gemini. Upload a text-based PDF resume to receive five practical job-search tools in one place:
 
 - **Resume review:** recruiter-style score, strengths, weaknesses, improvements, and recommendation
 - **ATS checker:** ATS score, missing keywords, formatting issues, and suggestions
@@ -10,7 +15,7 @@ ResumeIQ is a minimal, AI-powered resume analyzer built with Streamlit and Googl
 
 The interface includes a responsive dashboard, cached results for the current session, a connection test, and a Light/Dark appearance switch.
 
-## Run locally
+## Run the website locally
 
 ### Requirements
 
@@ -32,15 +37,35 @@ Create a `.env` file in the project root:
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
-Start the app:
+Start the website backend:
+
+```bash
+python web_app.py
+```
+
+Open `http://localhost:5000` in your browser.
+
+## Run the original Streamlit version
+
+The original Streamlit app is still in `app.py`:
 
 ```bash
 streamlit run app.py
 ```
 
-The app opens at `http://localhost:8501`.
+It opens at `http://localhost:8501`.
 
-## Deploy with Streamlit Community Cloud
+## Deploy the website
+
+The website can be deployed to any Python host that supports Flask. Set the start command to:
+
+```bash
+gunicorn web_app:app
+```
+
+For local Windows use, `python web_app.py` is sufficient.
+
+## Deploy the Streamlit version with Streamlit Community Cloud
 
 1. Push this repository to GitHub.
 2. Create a new app at [share.streamlit.io](https://share.streamlit.io).
@@ -56,7 +81,10 @@ Never commit `.env` or expose an API key in source control. The `.gitignore` fil
 ## Project structure
 
 ```text
-app.py          # Streamlit interface and Gemini orchestration
+app.py          # Original Streamlit application (preserved)
+web_app.py      # Separate Flask website backend
+templates/      # Website HTML
+static/         # Website CSS and JavaScript
 pdf_utils.py    # PDF text extraction
 prompts.py      # Analysis prompt templates
 requirements.txt

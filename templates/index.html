@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ResumeIQ | Resume analyzer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="/">resume<span>iq</span></a>
+      <div class="top-actions">
+        <span class="status-dot">Private session</span>
+        <button id="theme-toggle" class="icon-button" type="button" aria-label="Toggle dark mode">☾</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">AI career companion</p>
+          <h1>A better resume<br><em>starts here.</em></h1>
+          <p class="hero-text">Get recruiter-grade feedback, ATS insights, interview preparation, and a tailored cover letter from one simple upload.</p>
+        </div>
+        <div class="hero-mark" aria-hidden="true">✦</div>
+      </section>
+
+      <section class="workspace">
+        <div class="upload-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">01 / Upload</p>
+              <h2>Bring your resume</h2>
+            </div>
+            <span class="file-type">PDF only</span>
+          </div>
+          <form id="analyze-form">
+            <label id="drop-zone" class="drop-zone" for="resume-input">
+              <input id="resume-input" name="resume" type="file" accept=".pdf,application/pdf" hidden>
+              <span class="upload-icon">↑</span>
+              <strong>Drop your resume here</strong>
+              <span>or <u>browse your files</u></span>
+              <small id="file-name">Maximum 8,000 characters are analyzed</small>
+            </label>
+            <button id="analyze-button" class="primary-button" type="submit" disabled>Analyze my resume <span>→</span></button>
+          </form>
+          <p id="error-message" class="error-message" role="alert"></p>
+        </div>
+
+        <aside class="guide-panel">
+          <p class="eyebrow">02 / Your toolkit</p>
+          <h2>Everything you need to move forward.</h2>
+          <ul class="tool-list">
+            <li><b>01</b><span><strong>Resume review</strong>Strengths, gaps, and actionable improvements</span></li>
+            <li><b>02</b><span><strong>ATS readiness</strong>Make it easier for recruiters to find you</span></li>
+            <li><b>03</b><span><strong>Interview prep</strong>Questions shaped around your experience</span></li>
+            <li><b>04</b><span><strong>Career direction</strong>A practical six-month roadmap</span></li>
+          </ul>
+        </aside>
+      </section>
+
+      <section id="results-section" class="results-section hidden">
+        <div class="section-heading">
+          <div><p class="eyebrow">03 / Your report</p><h2 id="report-title">Your resume insights</h2></div>
+          <button id="new-analysis" class="secondary-button" type="button">New analysis</button>
+        </div>
+        <nav id="result-tabs" class="result-tabs" aria-label="Analysis sections"></nav>
+        <div id="result-content" class="result-content"></div>
+      </section>
+    </main>
+
+    <footer><span>resumeiq</span><span>Built for your next opportunity.</span></footer>
+  </div>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

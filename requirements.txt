@@ -1,4 +1,5 @@
 streamlit
+Flask
 google-genai
 pdfplumber
 python-dotenv
