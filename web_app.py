@@ -1,12 +1,18 @@
 import os
 import time
 
-from dotenv import load_dotenv
 from flask import Flask, jsonify, render_template, request
 from google import genai
 
 from pdf_utils import extract_text
 from prompts import ATS_PROMPT, CAREER_PROMPT, COVER_PROMPT, INTERVIEW_PROMPT, ROLE_PROMPT
+
+try:
+    from dotenv import load_dotenv
+except ModuleNotFoundError:
+    def load_dotenv():
+        return False
+
 
 load_dotenv()
 
