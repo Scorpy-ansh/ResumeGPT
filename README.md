@@ -65,6 +65,25 @@ gunicorn web_app:app
 
 For local Windows use, `python web_app.py` is sufficient.
 
+### Deploy on Vercel
+
+Import this repository into Vercel and deploy from the `main` branch. The included
+`pyproject.toml` explicitly points Vercel to the standalone website entry point:
+
+```toml
+[tool.vercel]
+entrypoint = "web_app:app"
+```
+
+In the Vercel project settings, add this environment variable:
+
+```text
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+Do not set the Vercel entry point to `app.py`; that file is the preserved Streamlit
+application. Vercel should deploy `web_app:app`.
+
 ## Deploy the Streamlit version with Streamlit Community Cloud
 
 1. Push this repository to GitHub.
