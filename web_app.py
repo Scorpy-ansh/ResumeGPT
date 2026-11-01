@@ -30,9 +30,16 @@ ANALYSES = (
 
 
 def ask_gemini(prompt):
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = (
+        os.getenv("GEMINI_API_KEY")
+        or os.getenv("GOOGLE_API_KEY")
+        or ""
+    ).strip()
     if not api_key:
-        raise RuntimeError("GEMINI_API_KEY is not configured.")
+        raise RuntimeError(
+            "Gemini API key is missing. Add GEMINI_API_KEY in the Vercel "
+            "project's Environment Variables, then redeploy."
+        )
 
     client = genai.Client(api_key=api_key)
     for attempt in range(5):

@@ -84,6 +84,9 @@ GEMINI_API_KEY=your_gemini_api_key_here
 Do not set the Vercel entry point to `app.py`; that file is the preserved Streamlit
 application. Vercel should deploy `web_app:app`.
 
+Use the exact variable name `GEMINI_API_KEY` without quotes or spaces. Select
+Production, Preview, and Development, then redeploy after saving it.
+
 ## Deploy the Streamlit version with Streamlit Community Cloud
 
 1. Push this repository to GitHub.
